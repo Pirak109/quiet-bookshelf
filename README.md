@@ -27,4 +27,4 @@ Microsoft Entraで既存のアプリ登録を開き、「認証」のシング�
 
 GitHub Pagesは `main` ブランチのルートを公開します。HTML、CSS、JavaScriptのみでビルドは不要です。公開URLを維持するため、GitHubのユーザー名・リポジトリ名・Pagesのドメイン設定は変更しないでください。通常のファイル更新でURLを変える必要はありません。
 
-このリポジトリにTXT本文やバックアップJSON、秘密鍵を追加しないでください。Microsoft認証ライブラリは同梱したMSAL Browser 3.28.1（MIT、ファイル内の著作権表示を参照）を使用しています。
+このリポジトリにTXT本文やバックアップJSON、秘密鍵を追加しないでください。Microsoft認証ライブラリは同梱したMSAL Browser 3.28.1（MIT、THIRD-PARTY-NOTICES.mdを参照）を使用しています。
