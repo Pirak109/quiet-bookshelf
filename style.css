@@ -7,7 +7,7 @@ body{background:var(--paper);color:var(--ink);min-height:100dvh}.reading-setting
 .book-card{position:relative;min-width:0}.book-card>.book{display:block;width:100%}.book-card .cover{width:100%;height:190px;aspect-ratio:auto;min-height:0;padding:37px 10px 13px;gap:7px;justify-content:flex-start}.book-card .cover-title{font-size:clamp(12px,3.1vw,14px);-webkit-line-clamp:3;line-height:1.65;flex-shrink:0}.favorite-toggle{position:absolute;top:0;right:0;width:44px;height:44px;min-height:44px;padding:6px;font-size:21px;color:var(--muted);line-height:1;background:transparent}.favorite-toggle[aria-pressed=true]{color:#97702e}body[data-theme=dark] .favorite-toggle[aria-pressed=true]{color:#dbc27d}.favorite-toggle:hover{background:transparent}.favorite-toggle:focus-visible{outline-offset:-3px}.sort-label select{max-width:170px}
 
 .book-caption{display:flex;flex-direction:column;overflow:hidden;font-size:11px;line-height:1.65;color:var(--muted);overflow-wrap:anywhere}
-.caption-first{display:block;flex:none;min-height:1.65em;overflow:hidden;white-space:pre;text-overflow:ellipsis}
+.cover-author{position:absolute;top:13px;left:10px;right:30px;display:block;font-size:clamp(9px,2.5vw,10px);line-height:1.65;color:var(--muted);overflow:hidden;white-space:pre;text-overflow:ellipsis}
 .caption-second{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;flex:none;line-height:inherit}
 
 .cover .book-caption{margin:0;flex:1 1 0;min-height:0}.cover .book-count-text{margin-top:auto;line-height:1.6;flex-shrink:0}.book>.book-state{margin-top:0}
