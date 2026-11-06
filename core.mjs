@@ -1,15 +1,23 @@
 export function titleOf(item){return item.name.replace(/\.txt$/i,'');}
 export function txtFiles(items){return items.filter(x=>x.file&&/\.txt$/i.test(x.name));}
-export function normalizeSort(order){return order==='favorites-unread'?'favorites':['name','added','modified','favorites','finished-last'].includes(order)?order:'name';}
-export function sorted(items,order,{progress={},isFavorite=()=>false}={}){
+export function normalizeSort(order){return ['favorites','favorites-unread'].includes(order)?'rating-desc':['name','added','modified','rating-desc','rating-asc','author','finished-last'].includes(order)?order:'name';}
+export function sorted(items,order,{progress={},isFavorite=()=>false,getRating=book=>isFavorite(book)?5:0,getAuthor=()=>''}={}){
+ order=normalizeSort(order);
  const byName=(a,b)=>a.name.localeCompare(b.name,'ja',{numeric:true});
  const finished=book=>(progress[book.id]?.ratio??0)>=.995;
  return [...items].sort((a,b)=>{
   if(order==='finished-last'){
    const rank=Number(finished(a))-Number(finished(b));if(rank)return rank;
   }
-  if(order==='favorites'){
-   const rank=Number(!!isFavorite(b))-Number(!!isFavorite(a));if(rank)return rank;
+  if(order==='rating-desc'||order==='rating-asc'){
+   const left=getRating(a)||0,right=getRating(b)||0;
+   const unrated=Number(left===0)-Number(right===0);if(unrated)return unrated;
+   const rank=order==='rating-desc'?right-left:left-right;if(rank)return rank;
+  }
+  if(order==='author'){
+   const left=String(getAuthor(a)||'').trim(),right=String(getAuthor(b)||'').trim();
+   const missing=Number(!left)-Number(!right);if(missing)return missing;
+   const rank=left.localeCompare(right,'ja',{numeric:true});if(rank)return rank;
   }
   if(order==='added'||order==='modified'){
    const field=order==='added'?'createdDateTime':'lastModifiedDateTime';

@@ -11,7 +11,7 @@ export function backupKey(key){
 }
 function cleanValue(type,value){
  if(type==='clientId'){if(typeof value!=='string'||!uuid.test(value))fail();return value;}
- if(type==='sort'){if(!['name','added','modified','favorites','finished-last','favorites-unread'].includes(value))fail();return value==='favorites-unread'?'favorites':value;}
+ if(type==='sort'){if(!['name','added','modified','favorites','finished-last','favorites-unread','rating-desc','rating-asc','author'].includes(value))fail();return ['favorites','favorites-unread'].includes(value)?'rating-desc':value;}
  if(type==='preferences'){
   if(!plain(value))fail();const clean=Object.create(null);
   if(value.size!==undefined){if(!Number.isInteger(value.size)||value.size<14||value.size>28)fail();clean.size=value.size;}
@@ -31,8 +31,8 @@ function cleanValue(type,value){
   if(!safeId(key))fail();
   if(type==='favorites'){
    let tuple;try{tuple=JSON.parse(key);}catch{fail();}
-   if(!Array.isArray(tuple)||tuple.length!==2||typeof tuple[0]!=='string'||!safeId(tuple[1])||typeof entry!=='boolean')fail();
-   if(entry)clean[key]=true;
+   if(!Array.isArray(tuple)||tuple.length!==2||typeof tuple[0]!=='string'||!safeId(tuple[1])||!(typeof entry==='boolean'||Number.isInteger(entry)&&entry>=0&&entry<=5))fail();
+   if(entry!==false)clean[key]=entry===true?5:entry;
   }else if(type==='progress'){
    if(!plain(entry)||!Number.isFinite(entry.ratio)||entry.ratio<0||entry.ratio>1||!Number.isFinite(entry.at)||entry.at<0)fail();
    clean[key]={ratio:entry.ratio,at:entry.at};
@@ -53,7 +53,7 @@ export function createBackup(storage,sourceOrigin=''){
 }
 export function backupSummary(backup){
  const result={accounts:0,favorites:0,progress:0};const accounts=new Set();
- for(const [key,value] of Object.entries(backup.entries)){const info=backupKey(key);if(info.account)accounts.add(info.account);if(info.type==='favorites')result.favorites+=Object.keys(value).length;if(info.type==='progress')result.progress+=Object.keys(value).length;}
+ for(const [key,value] of Object.entries(backup.entries)){const info=backupKey(key);if(info.account)accounts.add(info.account);if(info.type==='favorites')result.favorites+=Object.values(value).filter(rating=>rating>0).length;if(info.type==='progress')result.progress+=Object.keys(value).length;}
  result.accounts=accounts.size;return result;
 }
 export function importBackup(storage,value){
@@ -63,7 +63,7 @@ export function importBackup(storage,value){
   if(old!==null){try{current=cleanValue(info.type,JSON.parse(old));}catch{throw Error('現在の保存データを安全に読み取れないため、取り込みを中止しました。');}}
   let merged=incoming;
   if(info.type==='progress'&&current){merged=Object.assign(Object.create(null),current);for(const [id,position] of Object.entries(incoming))if(!merged[id]||position.at>merged[id].at)merged[id]=position;}
-  if(info.type==='favorites'&&current)merged=Object.assign(Object.create(null),current,incoming);
+  if(info.type==='favorites'&&current)merged=Object.assign(Object.create(null),incoming,current);
   if(['folder','clientId'].includes(info.type)&&current!==null)merged=current;
   before.set(key,old);writes.set(key,JSON.stringify(merged));
  }
